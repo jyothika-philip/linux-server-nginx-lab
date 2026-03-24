@@ -11,7 +11,7 @@ This project demonstrates the setup of an Ubuntu Server virtual machine using Vi
 ---
 
 ## Architecture
-
+```
 Browser (Host Machine)
 ↓
 localhost:8080
@@ -21,7 +21,7 @@ VirtualBox Port Forwarding
 Ubuntu Server (VM)
 ↓
 Nginx (Port 80)
-
+```
 ---
 
 ## Technologies Used
