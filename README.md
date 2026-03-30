@@ -169,4 +169,11 @@ Hybrid Home Lab:
 * Ubuntu Server (Web server)
 
 This will simulate a real enterprise environment.
-  
+
+## Screenshots
+
+### Web Server Output in Browser
+![Browser Output](images/browser-output.png)
+
+### Nginx Service Status
+![Nginx Status](images/nginx-status.png)
