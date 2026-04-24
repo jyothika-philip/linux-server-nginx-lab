@@ -1,7 +1,5 @@
 # Linux Server Nginx Lab
 
----
-
 ## Zusammenfassung (Deutsch)
 
 Dieses Projekt dokumentiert den Aufbau eines Linux-Servers in einer VirtualBox-Umgebung sowie die Installation und Bereitstellung eines Nginx-Webservers. Ziel war es, grundlegende Konzepte der Systemadministration wie Benutzerverwaltung, Paketverwaltung, Services, Netzwerkkonfiguration und Port-Weiterleitung praktisch zu verstehen und anzuwenden.
@@ -173,7 +171,7 @@ Hybrid Home Lab:
 * Ubuntu Server (Web server)
 
 This will simulate a real enterprise environment.
-
+---
 ## Screenshots
 
 ### Web Server Output in Browser
@@ -181,3 +179,4 @@ This will simulate a real enterprise environment.
 
 ### Nginx Service Status
 ![Nginx Status](images/nginx-status.png)
+---
