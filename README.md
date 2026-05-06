@@ -2,181 +2,233 @@
 
 ## Zusammenfassung (Deutsch)
 
-Dieses Projekt dokumentiert den Aufbau eines Linux-Servers in einer VirtualBox-Umgebung sowie die Installation und Bereitstellung eines Nginx-Webservers. Ziel war es, grundlegende Konzepte der Systemadministration wie Benutzerverwaltung, Paketverwaltung, Services, Netzwerkkonfiguration und Port-Weiterleitung praktisch zu verstehen und anzuwenden.
+In diesem Projekt wurde ein Ubuntu-Server in einer VirtualBox-Umgebung eingerichtet und als Webserver mit Nginx konfiguriert. Der Server wurde in ein internes Labornetzwerk integriert, mit einer statischen IP-Adresse versehen und über SSH administriert. Zusätzlich wurde eine Firewall (UFW) konfiguriert, um nur notwendige Dienste freizugeben. Ziel war es, grundlegende Konzepte der Linux-Systemadministration, Netzwerkkonfiguration und Serversicherheit praktisch umzusetzen.
 
 ---
 
 ## Overview
 
-This project demonstrates the setup of an Ubuntu Server virtual machine using VirtualBox and the deployment of an Nginx web server. It focuses on building foundational system administration skills including Linux navigation, package management, service management, networking, and port forwarding.
+This project demonstrates the setup of an Ubuntu Server virtual machine and the deployment of an Nginx web server within a controlled lab network. The server was configured with a static IP address, accessed remotely via SSH, and secured using a firewall (UFW). The goal was to simulate real-world Linux system administration tasks including service management, networking, and basic security hardening.
 
 ---
 
-## Architecture
+## Lab Architecture
+
+```text
+Host Machine (Browser / SSH)
+        |
+        | 192.168.56.x Network
+        |
+Ubuntu Server (192.168.56.103)
+        |
+        | Port 80
+        |
+Nginx Web Server
 ```
-Browser (Host Machine)
-↓
-localhost:8080
-↓
-VirtualBox Port Forwarding
-↓
-Ubuntu Server (VM)
-↓
-Nginx (Port 80)
-```
+
 ---
 
 ## Technologies Used
 
-* VirtualBox
-* Ubuntu Server 24.04 LTS
-* Nginx
-* Linux CLI (Command Line Interface)
-* VirtualBox NAT Networking
-* Port Forwarding
+- Ubuntu Server 24.04 LTS
+- Nginx
+- OpenSSH Server
+- UFW (Uncomplicated Firewall)
+- VirtualBox
+- Linux CLI
 
 ---
 
-## What I Practiced
+## What I Built
 
-* Creating and managing a virtual machine
-* Installing Ubuntu Server
-* Logging into a Linux system
-* Updating system packages using `apt`
-* Understanding user identity (`whoami`, `id`)
-* Navigating the Linux filesystem (`pwd`, `ls`, `cd`)
-* Creating and managing files
-* Installing and managing services (Nginx)
-* Checking service status using `systemctl`
-* Identifying network interfaces using `ip a`
-* Testing services using `curl`
-* Configuring port forwarding in VirtualBox
-* Accessing a web server from a browser
+- Installed Ubuntu Server in VirtualBox
+- Configured networking using Host-only Adapter
+- Assigned a static IP address (`192.168.56.103`)
+- Enabled SSH for remote access
+- Installed and configured Nginx
+- Hosted a custom web page
+- Configured firewall rules using UFW
+- Verified connectivity and service availability
 
 ---
 
-## Key Commands Used
+## Network Configuration
 
-sudo apt update
-sudo apt upgrade
-whoami
-id
-pwd
-ls
-mkdir practice
-cd practice
-touch notes.txt
-cat notes.txt
-echo "hello" > notes.text
-sudo apt install nginx
-systemctl status nginx
+### Ubuntu Server
+
+```text
+Hostname: ubuntu-server
+IP Address: 192.168.56.103
+Subnet Mask: 255.255.255.0
+Interface: enp0s3
+```
+
+---
+
+## Verification Commands
+
+### Check IP address
+
+```bash
 ip a
-curl localhost
+```
 
 ---
 
-## Networking Explanation
+### Check Nginx status
 
-The Nginx web server runs inside the Ubuntu virtual machine and listens on **port 80**, which is the default HTTP port.
+```bash
+systemctl status nginx
+```
 
-Since the VM was configured using **NAT in VirtualBox**, direct access from the host machine is restricted.
+---
 
-To solve this, **port forwarding** was configured:
+### Test web server locally
 
-* Host Port: 8080
-* Guest Port: 80
+```bash
+curl localhost
+```
 
-This means:
+---
 
-localhost:8080 (Host) → forwarded to → Port 80 (Ubuntu VM → Nginx)
+### Test SSH connection (from host)
 
-As a result, the web server became accessible via:
+```bash
+ssh username@192.168.56.103
+```
 
-http://localhost:8080
+---
+
+### Check firewall status
+
+```bash
+sudo ufw status
+```
+
+---
+
+## Nginx Configuration
+
+The default Nginx page was modified to display custom content:
+
+```html
+<h1>Jyothika's Linux Server Lab</h1>
+<p>This web server is hosted on Ubuntu using Nginx.</p>
+<p>Server IP: 192.168.56.103</p>
+```
+
+---
+
+## Firewall Configuration (UFW)
+
+The firewall was configured to allow only required services:
+
+```text
+22/tcp → SSH
+80/tcp → HTTP
+```
+
+All other incoming connections are blocked by default.
 
 ---
 
 ## Result
 
-* Nginx was successfully installed and running
-* The default web page was accessible using `curl localhost`
-* The server was accessed from a browser via port forwarding
-* The default Nginx page was modified to display custom content
+- Nginx is running and accessible via browser
+- Custom web page is successfully hosted
+- Server is accessible via SSH from host machine
+- Firewall is active and correctly configured
 
 ---
 
-## Challenges and Solutions
+### Verification
 
-### 1. VM booted into installer again
-
-Problem: After installation, the VM started the Ubuntu installer again.
-Cause: The Ubuntu ISO file was still attached.
-Solution: Removed the ISO so the VM booted from the installed disk.
-
----
-
-### 2. Network interface confusion
-
-Problem: It was unclear which IP address to use.
-Solution: Used `ip a` to identify the active interface (`enp0s3`) and its IP.
+```text
+ip a → 192.168.56.103
+systemctl status nginx → active (running)
+sudo ufw status → active
+```
 
 ---
 
-### 3. Port access limitation (NAT)
+## Troubleshooting
 
-Problem: Could not access the server directly using the VM IP.
-Cause: VirtualBox NAT restrictions.
-Solution: Configured port forwarding (8080 → 80).
+### 1. NAT Network Limitation
+
+**Problem:** Server was not accessible from host using IP  
+**Cause:** NAT network isolates VM  
+**Solution:** Switched to Host-only Adapter (`192.168.56.x` network)
 
 ---
 
-### 4. Nano editing issue
+### 2. Dynamic IP Issue
 
-Problem: Unable to type in `nano`.
-Solution: Used:
-echo "hello" > notes.text
-cat notes.text
+**Problem:** IP address changed after reboot  
+**Cause:** DHCP assignment  
+**Solution:** Configured static IP using Netplan
+
+---
+
+### 3. SSH Authentication Error
+
+**Problem:** Permission denied during login  
+**Cause:** Incorrect username or password  
+**Solution:** Verified username using `whoami` and retried login
+
+---
+
+### 4. Firewall Risk
+
+**Problem:** Risk of locking out SSH  
+**Solution:** Allowed SSH before enabling firewall
 
 ---
 
 ## What I Learned
 
-* How a Linux server is installed and accessed
-* How services like Nginx run in the background
-* The role of ports in networking
-* How virtualization affects networking
-* Basic troubleshooting techniques
-* Working with a system via CLI
+- How to configure a Linux server in a virtual environment
+- How SSH enables remote server administration
+- How web servers (Nginx) serve content over HTTP
+- Importance of static IP configuration for servers
+- Basic firewall configuration and security principles
+- Troubleshooting network and authentication issues
 
 ---
 
 ## Next Improvements
 
-* Configure firewall using UFW
-* Explore logs (`/var/log`)
-* Practice service troubleshooting
-* Improve SSH usage
-* Extend into a hybrid Windows + Linux lab
+- Explore Nginx configuration (virtual hosts)
+- Analyze logs (`/var/log/nginx/`)
+- Configure HTTPS using SSL
+- Integrate Linux server into Active Directory lab
+- Automate setup using shell scripts
 
 ---
 
-## Future Work
+## Key Takeaways
 
-This project serves as a foundation for a larger setup:
+- Servers should use static IP addresses for stability
+- SSH enables secure remote management of systems
+- Firewalls should allow only necessary services
+- Nginx serves content from defined directories over HTTP
+- Network configuration plays a critical role in accessibility
 
-Hybrid Home Lab:
-
-* Windows Server (Active Directory + DNS)
-* Windows Client (Domain joined)
-* Ubuntu Server (Web server)
-
-This will simulate a real enterprise environment.
 ---
+
 ## Screenshots
 
-### Web Server Output in Browser
-![Browser Output](images/browser-output.png)
+### Custom Web Page
+
+![Custom Page](images/nginx-custom-page.png)
+
+---
 
 ### Nginx Service Status
+
 ![Nginx Status](images/nginx-status.png)
+
 ---
+
+### Firewall Status
+
+![UFW Status](images/ufw-status.png)
